@@ -1,0 +1,114 @@
+{% extends 'medical_base.html' %}
+{% load static crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="bg-white p-5 shadow rounded text-center">
+        <h2 class="text-success mb-4">Welcome to Your Medical Dashboard</h2>
+
+        <p class="lead">Hello, <strong>{{ user.store_name }}</strong>!</p>
+        <p>Your registration status:
+            {% if user.is_approved %}
+            <span class="badge bg-success">Approved</span>
+            {% else %}
+            <span class="badge bg-warning text-dark">Pending Approval</span>
+            {% endif %}
+        </p>
+
+        <hr class="my-4">
+
+        <div class="d-grid gap-3 col-6 mx-auto">
+            <a href="{% url 'medical:add_medicine' %}" class="btn btn-outline-primary">Add Medicine</a>
+            <a href="{% url 'medical:view_uploaded_prescriptions' %}" class="btn btn-outline-success">View Prescriptions</a>
+            <a href="{% url 'medical:view_non_prescription_orders' %}" class="btn btn-outline-success">View Non-Prescription Orders</a>
+            <a href="{% url 'medical:medical_store_notifications' %}" class="btn btn-outline-success">View Notifications</a>
+        </div>
+
+        <hr class="my-5">
+
+        <h4 class="text-start text-primary mb-3">Your Medicines</h4>
+
+        {% if medicines %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle">
+                <thead class="table-success">
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Brand</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Expiry</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for med in medicines %}
+                <tr>
+                    <td>
+                        {% if med.medicine_image %}
+                        <img src="{{ med.medicine_image.url }}" width="60" height="60" class="img-thumbnail medicine-img" onclick="openImageModal('{{ med.medicine_image.url }}')">
+                        {% else %}
+                        N/A
+                        {% endif %}
+                    </td>
+                    <td>{{ med.name }}</td>
+                    <td>{{ med.brand|default:"N/A" }}</td>
+                    <td>₹{{ med.price }}</td>
+                    <td>{{ med.quantity_in_stock }}</td>
+                    <td>{{ med.expiry_date }}</td>
+                    <td>{{ med.description|default:"-" }}</td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'medical:edit_medicine' med.id %}" class="btn btn-sm btn-primary">Edit</a>
+                            <form action="{% url 'medical:delete_medicine' med.id %}" method="post" onsubmit="return confirm('Are you sure you want to delete this medicine?');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted">No medicines added yet.</p>
+        {% endif %}
+
+        <hr class="my-4">
+
+        <a href="{% url 'logout' %}" class="btn btn-danger px-4">Logout</a>
+    </div>
+</div>
+
+<!-- Modal Structure -->
+<div class="modal" id="imageModal" tabindex="-1" style="display:none; position:fixed; z-index:1050; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); justify-content:center; align-items:center;">
+    <span style="position:absolute; top:20px; right:30px; font-size:40px; color:white; cursor:pointer;" onclick="closeImageModal()">&times;</span>
+    <img id="modalImage" src="" style="max-width:90%; max-height:90%; border:5px solid white; border-radius:10px;">
+</div>
+
+<!-- Style for image cursor -->
+<style>
+.medicine-img {
+    cursor: pointer;
+}
+</style>
+
+<!-- JavaScript for Modal -->
+<script>
+function openImageModal(imageUrl) {
+    var modal = document.getElementById('imageModal');
+    var modalImg = document.getElementById('modalImage');
+    modal.style.display = 'flex';
+    modalImg.src = imageUrl;
+}
+
+function closeImageModal() {
+    var modal = document.getElementById('imageModal');
+    modal.style.display = 'none';
+}
+</script>
+
+{% endblock %}

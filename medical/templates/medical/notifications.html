@@ -1,0 +1,23 @@
+{% extends 'medical_base.html' %}  {# If you have a base template. Else remove this line #}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Notifications</h2>
+
+    {% if notifications %}
+        <div class="list-group">
+            {% for notification in notifications %}
+                <div class="list-group-item mb-3 shadow-sm p-3 rounded" style="background-color: #f9f9f9;">
+                    <h5 class="mb-1">{{ notification.title }}</h5>
+                    <p class="mb-1">{{ notification.message }}</p>
+                    <small class="text-muted">Posted on: {{ notification.created_at|date:"d M Y, h:i A" }}</small>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            No notifications available.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

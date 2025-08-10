@@ -1,0 +1,132 @@
+{% extends 'medical_base.html' %}
+{% load static crispy_forms_tags %}
+
+{% block content %}
+<div class="container bg-white shadow rounded p-4">
+    <h2 class="mb-4 text-success text-center">Medical Store Registration</h2>
+    {% if messages %}
+    <div class="alert alert-success" role="alert">
+        {% for message in messages %}
+        <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'medical:medical_registration' %}" enctype="multipart/form-data" novalidate>
+
+        {% csrf_token %}
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.store_name|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.shop_no|as_crispy_field }}
+            </div>
+        </div>
+
+        <!-- Owner Details -->
+        <h5 class="text-primary">Owner Details</h5>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.owner_name|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.owner_photo|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.owner_id_proof|as_crispy_field }}
+            </div>
+        </div>
+
+        <!-- Pharmacist Details -->
+        <h5 class="text-primary">Pharmacist Details</h5>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.pharmacist_name|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.pharmacist_photo|as_crispy_field }}
+            </div>
+        </div>
+
+        <!-- Contact Information -->
+        <h5 class="text-primary">Contact Information</h5>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.email|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.contact|as_crispy_field }}
+            </div>
+        </div>
+
+        <!-- Address -->
+        <h5 class="text-primary">Address</h5>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.address|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.street_address|as_crispy_field }}
+            </div>
+            <div class="col-md-4">
+                {{ form.city|as_crispy_field }}
+            </div>
+            <div class="col-md-4">
+                {{ form.state|as_crispy_field }}
+            </div>
+            <div class="col-md-4">
+                {{ form.pincode|as_crispy_field }}
+            </div>
+        </div>
+
+        <!-- License & Legal -->
+        <h5 class="text-primary">Licensing & Documents</h5>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.license_no|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.license_photo|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.intimation_letter_photo|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.food_license_photo|as_crispy_field }}
+            </div>
+        </div>
+
+        <!-- Bank Details -->
+        <h5 class="text-primary">Bank Details</h5>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.bank_account_no|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.ifsc_code|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.passbook_photo|as_crispy_field }}
+            </div>
+        </div>
+
+        <!-- Username & Password -->
+        <h5 class="text-primary">Account Details</h5>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.username|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.password|as_crispy_field }}
+            </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success px-5">Submit Registration</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

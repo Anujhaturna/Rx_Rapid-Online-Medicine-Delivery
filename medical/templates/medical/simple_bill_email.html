@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f9f9f9; color: #333; }
+        .container { background: #fff; padding: 20px; border-radius: 10px; }
+        h2 { color: #1a73e8; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; color: #333; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>RxRapid Invoice Summary</h2>
+    <p><strong>Patient:</strong> {{ customer.name }}</p>
+    <p><strong>Bill ID:</strong> {{ bill_id }}</p>
+    <p><strong>Store:</strong> {{ store.store_name }}</p>
+
+    <h4>Items:</h4>
+    <table>
+        <tr>
+            <th>Medicine</th>
+            <th>Expiry</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Total</th>
+        </tr>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.medicine_name }}</td>
+            <td>{{ item.expiry_date|date:"M Y" }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>₹{{ item.mrp }}</td>
+            <td>₹{{ item.quantity|floatformat:2|add:"0"|floatformat:2|floatformat }}×{{ item.mrp|floatformat:2 }} = ₹{{ item.quantity|floatformat:2|add:"0"|floatformat:2|floatformat|floatformat|add:"0"|floatformat }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <p><strong>Subtotal:</strong> {{ subtotal }}</p>
+    <p><strong>GST (18%):</strong> {{ gst }}</p>
+    <p><strong>Grand Total:</strong> <span style="color:green;">{{ grand_total }}</span></p>
+
+    <p>Thank you for choosing <strong>RxRapid</strong>! We hope you get well soon.</p>
+    <hr>
+    <small>This is a system-generated email. Please do not reply.</small>
+</div>
+</body>
+</html>

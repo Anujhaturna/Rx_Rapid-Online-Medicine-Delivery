@@ -1,0 +1,50 @@
+{% extends 'manager/base_manager.html' %}
+{% block title %}Sent Notifications{% endblock %}
+
+{% block content %}
+<style>
+    .top-bar {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+    }
+    .btn-back {
+        background-color: #6c757d;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+    .btn-back:hover {
+        background-color: #5a6268;
+        transform: scale(1.05);
+    }
+</style>
+
+<!-- Top Bar with Back Button -->
+<div class="top-bar">
+    <a href="{% url 'manager_dashboard' %}" class="btn-back">Back to Dashboard</a>
+</div>
+
+<div class="container mx-auto p-6 bg-white rounded shadow-md">
+  <h2 class="text-2xl font-bold mb-4">Sent Notifications</h2>
+
+  {% if notifications %}
+    <ul class="space-y-4">
+      {% for notification in notifications %}
+        <li class="p-4 border border-gray-200 rounded shadow-sm bg-gray-50">
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-blue-700">To: {{ notification.medical_store.store_name }}</h3>
+            <span class="text-sm text-gray-600">Scheduled: {{ notification.scheduled_date }}</span>
+          </div>
+          <p class="mt-2 text-gray-800">{{ notification.message }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-gray-500 text-center mt-4">No notifications have been sent yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

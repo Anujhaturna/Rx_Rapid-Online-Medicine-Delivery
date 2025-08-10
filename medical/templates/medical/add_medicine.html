@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>{% extends 'medical_base.html' %}
+{% load static crispy_forms_tags %}
+
+{% block content %}
+<div class="container bg-white shadow rounded p-5 mt-4">
+    <h2 class="mb-4 text-success text-center">Add Medicine</h2>
+
+    <form method="POST" novalidate enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-primary px-4">Add Medicine</button>
+            <a href="{% url 'medical:medical_dashboard' %}" class="btn btn-secondary ms-2">Back to Dashboard</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

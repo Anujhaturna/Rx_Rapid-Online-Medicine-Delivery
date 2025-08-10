@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}My Cart{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto mt-10">
+    <h2 class="text-2xl font-bold mb-6 text-center">🛒 My Cart</h2>
+
+    {% if cart_items %}
+        <table class="w-full mb-8">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="p-3">Medicine</th>
+                    <th class="p-3">Price</th>
+                    <th class="p-3">Quantity</th>
+                    <th class="p-3">Total</th>
+                    <th class="p-3">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr class="border-t">
+                    <td class="p-3 flex items-center space-x-4">
+                      {% if item.medicine.medicine_image %}
+    <img src="{{ item.medicine.medicine_image.url }}" alt="{{ item.medicine.name }}" class="w-16 h-16 object-cover rounded border">
+{% else %}
+    <img src="https://via.placeholder.com/64x64?text=No+Image" class="w-16 h-16 object-cover rounded border">
+{% endif %}
+
+                        <span>{{ item.medicine.name }}</span>
+                    </td>
+                    <td class="p-3">₹{{ item.medicine.price }}</td>
+                    <td class="p-3">
+                        <form action="{% url 'update-cart-quantity' item.id %}" method="post" class="flex items-center space-x-2">
+                            {% csrf_token %}
+                            <button name="action" value="decrease" class="px-2 py-1 bg-gray-200 rounded">−</button>
+                            <span class="px-2">{{ item.quantity }}</span>
+                            <button name="action" value="increase" class="px-2 py-1 bg-gray-200 rounded">+</button>
+                        </form>
+                    </td>
+                    <td class="p-3">₹{{ item.total_price }}</td>
+                    <td class="p-3">
+                        <form action="{% url 'remove-from-cart' item.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-500 hover:text-red-700">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Display Total Price -->
+        <div class="text-right font-bold text-xl">
+            Total: ₹{{ total }}
+        </div>
+
+        <!-- Proceed to Checkout Button -->
+        <div class="text-right mt-6">
+            <a href="{% url 'checkout' %}" class="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700">Proceed to Checkout</a>
+        </div>
+
+    {% else %}
+        <p class="text-center text-gray-600 text-lg">🛒 Your cart is currently empty.</p>
+    {% endif %}
+</div>
+{% endblock %}

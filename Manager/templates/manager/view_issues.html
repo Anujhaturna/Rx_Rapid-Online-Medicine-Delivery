@@ -1,0 +1,34 @@
+<!-- view_issues.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}My Issues{% endblock %}
+
+{% block content %}
+<h2>My Issues</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Subject</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Created At</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for issue in issues %}
+        <tr>
+            <td>{{ issue.subject }}</td>
+            <td>{{ issue.description }}</td>
+            <td>{{ issue.status }}</td>
+            <td>{{ issue.created_at }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No issues found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

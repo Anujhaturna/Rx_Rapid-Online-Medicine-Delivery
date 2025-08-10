@@ -1,0 +1,52 @@
+{% extends 'manager/base_manager.html' %}
+{% block title %}View Medical Store{% endblock %}
+
+{% block content %}
+<div class="bg-white shadow rounded-xl p-6">
+    <h2 class="text-2xl font-semibold mb-4">Store Details</h2>
+
+    <p><strong>Store Name:</strong> {{ store.store_name }}</p>
+
+    <h3 class="text-xl font-semibold mt-4 mb-2">Owner Details</h3>
+    <p><strong>Owner Name:</strong> {{ store.owner_name }}</p>
+    <p><strong>Owner Photo:</strong><br><img src="{{ store.owner_photo.url }}" alt="Owner Photo" class="w-32 rounded mt-1"></p>
+    <p><strong>Owner ID Proof:</strong> <a href="{{ store.owner_id_proof.url }}" target="_blank" class="text-blue-600 underline">View Document</a></p>
+
+    <h3 class="text-xl font-semibold mt-4 mb-2">Pharmacist Details</h3>
+    <p><strong>Pharmacist Name:</strong> {{ store.pharmacist_name }}</p>
+    <p><strong>Pharmacist Photo:</strong><br><img src="{{ store.pharmacist_photo.url }}" alt="Pharmacist Photo" class="w-32 rounded mt-1"></p>
+
+    <h3 class="text-xl font-semibold mt-4 mb-2">Address</h3>
+    <p><strong>Address:</strong> {{ store.address }}</p>
+    <p><strong>Street Address:</strong> {{ store.street_address }}</p>
+    <p><strong>City:</strong> {{ store.city }}</p>
+    <p><strong>State:</strong> {{ store.state }}</p>
+    <p><strong>Pincode:</strong> {{ store.pincode }}</p>
+
+    <h3 class="text-xl font-semibold mt-4 mb-2">Contact Info</h3>
+    <p><strong>Email:</strong> {{ store.email }}</p>
+    <p><strong>Contact:</strong> {{ store.contact }}</p>
+    <p><strong>Shop No:</strong> {{ store.shop_no }}</p>
+
+    <h3 class="text-xl font-semibold mt-4 mb-2">Licenses & Documents</h3>
+    <p><strong>License No:</strong> {{ store.license_no }}</p>
+    <p><strong>License Photo:</strong> <a href="{{ store.license_photo.url }}" target="_blank" class="text-blue-600 underline">View</a></p>
+    <p><strong>Intimation Letter:</strong> <a href="{{ store.intimation_letter_photo.url }}" target="_blank" class="text-blue-600 underline">View</a></p>
+    <p><strong>Food License Photo:</strong> <a href="{{ store.food_license_photo.url }}" target="_blank" class="text-blue-600 underline">View</a></p>
+
+    <h3 class="text-xl font-semibold mt-4 mb-2">Bank Details</h3>
+    <p><strong>Account No:</strong> {{ store.bank_account_no }}</p>
+    <p><strong>IFSC Code:</strong> {{ store.ifsc_code }}</p>
+    <p><strong>Passbook Photo:</strong> <a href="{{ store.passbook_photo.url }}" target="_blank" class="text-blue-600 underline">View</a></p>
+
+    <p class="mt-4"><strong>Approved:</strong>
+        {% if store.is_approved %}
+            <span class="text-green-600 font-semibold">Yes</span>
+        {% else %}
+            <span class="text-red-600 font-semibold">No</span>
+        {% endif %}
+    </p>
+
+    <a href="{% url 'manage_stores' %}" class="mt-6 inline-block text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded">Back</a>
+</div>
+{% endblock %}

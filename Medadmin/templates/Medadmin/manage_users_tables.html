@@ -1,0 +1,74 @@
+<!-- ✅ Customers Table -->
+<div class="section">
+    <h2>Customers</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Address</th>
+        </tr>
+        {% for c in customers %}
+        <tr>
+            <td class="highlight">{{ c.name }}</td>
+            <td class="highlight">{{ c.email }}</td>
+            <td class="highlight">{{ c.phone }}</td>
+            <td class="highlight">{{ c.address }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">No customers found</td></tr>
+        {% endfor %}
+    </table>
+</div>
+
+<!-- ✅ Medical Stores Table -->
+<div class="section">
+    <h2>Medical Stores</h2>
+    <table>
+        <tr>
+            <th>Store Name</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>Owner Name</th>
+            <th>Pharmacist Name</th>
+            <th>status</th>
+        </tr>
+        {% for s in stores %}
+        <tr>
+            <td class="highlight">{{ s.store_name }}</td>
+            <td class="highlight">{{ s.email }}</td>
+            <td class="highlight">{{ s.address }}</td>
+            <td class="highlight">{{ s.owner_name }}</td>
+            <td class="highlight">{{ s.pharmacist_name }}</td>
+            <td class="highlight">{{ s.is_approved}}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">No medical stores found</td></tr>
+        {% endfor %}
+    </table>
+</div>
+
+<!-- ✅ Managers Table -->
+<div class="section">
+    <h2>Managers</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Action</th>
+        </tr>
+        {% for m in managers %}
+        <tr>
+            <td class="highlight">{{ m.first_name }} {{ m.last_name }}</td>
+            <td class="highlight">{{ m.user.email }}</td>
+            <td class="highlight">{{ m.phone_number }}</td>
+            <td>
+                <a href="{% url 'delete_manager' m.id %}" style="color: red;">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">No managers found</td></tr>
+        {% endfor %}
+    </table>
+</div>

@@ -1,0 +1,402 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block content %}
+<style>
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f4f6f9;
+        margin: 0;
+        padding: 0;
+    }
+
+    .page-container {
+        padding: 30px;
+        animation: slideIn 0.8s ease-in-out;
+    }
+
+    .back-btn-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+    }
+
+    .back-btn-container a {
+        padding: 10px 25px;
+        background-color: #1976D2;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+    }
+
+    .back-btn-container a:hover {
+        background-color: #0d47a1;
+    }
+
+    .top-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    .left-section {
+        flex: 1;
+        min-width: 280px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .right-section {
+        flex: 1;
+        min-width: 280px;
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        animation: slideIn 1s ease;
+    }
+
+    .search-form {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .search-form select,
+    .search-form input[type="date"] {
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        flex: 1;
+        min-width: 180px;
+    }
+
+    .search-form button,
+    .search-form a {
+        padding: 10px 20px;
+        font-weight: 600;
+        border-radius: 5px;
+        text-decoration: none;
+        color: white;
+        transition: background-color 0.3s ease;
+    }
+
+    .search-form button.search-btn {
+        background-color: #2196F3;
+        border: none;
+    }
+
+    .search-form button.search-btn:hover {
+        background-color: #1976D2;
+    }
+
+    .search-form a.reset-btn {
+        background-color: #f44336;
+    }
+
+    .search-form a.reset-btn:hover {
+        background-color: #d32f2f;
+    }
+
+    .income-summary, .calculator {
+        background: #ffffff;
+        border-left: 5px solid #4CAF50;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+        animation: slideIn 1s ease;
+    }
+
+    .calculator {
+        border-left-color: #2196F3;
+    }
+
+    .calculator input[type="number"] {
+        padding: 10px;
+        width: 120px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-right: 10px;
+    }
+
+    button.calc-btn {
+        padding: 10px 20px;
+        background-color: #2196F3;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button.calc-btn:hover {
+        background-color: #1976D2;
+    }
+
+    #calculatedResult {
+        margin-top: 10px;
+        font-weight: bold;
+    }
+
+    .chart-container {
+        max-width: 100%;
+        text-align: center;
+        background: #f8f8f8;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .chart-container canvas {
+        max-width: 100%;
+    }
+
+    h2 {
+        margin-top: 40px;
+        margin-bottom: 20px;
+        color: #2c3e50;
+        font-size: 26px;
+        animation: slideIn 1s ease;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 40px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        font-size: 15px;
+        animation: slideIn 1s ease;
+    }
+
+    th, td {
+        padding: 14px 18px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+    }
+
+    thead {
+        background: linear-gradient(90deg, #4CAF50 0%, #45A049 100%);
+        color: white;
+        font-weight: 600;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tbody tr:hover {
+        background-color: #e0f7fa;
+        cursor: pointer;
+    }
+
+    td[colspan] {
+        text-align: center;
+        color: #999;
+        font-style: italic;
+    }
+</style>
+
+<div class="page-container">
+
+    <div class="back-btn-container">
+        <a href="{% url 'manager_dashboard' %}">Back to Dashboard</a>
+    </div>
+
+    <!-- Filters + Income Section -->
+    <div class="top-section">
+        <div class="left-section">
+            <form method="GET" class="search-form">
+                <select name="medical_store">
+                    <option value="">Select Medical Store</option>
+                    {% for store in medical_stores %}
+                        <option value="{{ store.id }}" {% if store.id|stringformat:"s" == selected_store_id %}selected{% endif %}>{{ store.store_name }}</option>
+                    {% endfor %}
+                </select>
+
+                <input type="date" name="from_date" value="{{ from_date }}">
+                <input type="date" name="to_date" value="{{ to_date }}">
+
+                <button type="submit" class="search-btn">Search</button>
+                <a href="{% url 'sales_report' %}" class="reset-btn">Reset</a>
+            </form>
+
+            {% if total_income %}
+            <div class="income-summary">
+                <h3>Total Income: ₹<span id="totalIncome">{{ total_income }}</span></h3>
+            </div>
+
+            <div class="calculator">
+                <h3>Percentage Calculator</h3>
+                <input type="number" id="percentageInput" placeholder="Enter %">
+                <button type="button" class="calc-btn" onclick="calculatePercentage()">Calculate</button>
+                <p id="calculatedResult"></p>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if total_income %}
+        <div class="right-section">
+            <h3 style="text-align:center;">Month-wise Sales (Bar Graph)</h3>
+            <div class="chart-container">
+                <canvas id="salesBarChart" width="100" height="70"></canvas>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Tables Section -->
+    <div class="table-container">
+        <h2>Prescription Bills</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Bill ID</th>
+                    <th>Customer</th>
+                    <th>Medical Store</th>
+                    <th>Total Amount</th>
+                    <th>Generated At</th>
+                    <th>Notified</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bill in bills %}
+                    <tr>
+                        <td>{{ bill.id }}</td>
+                        <td>{{ bill.customer.name }}</td>
+                        <td>{{ bill.medical_store.store_name }}</td>
+                        <td>₹{{ bill.total_amount }}</td>
+                        <td>{{ bill.generated_at|date:"Y-m-d H:i" }}</td>
+                        <td>{{ bill.is_notified|yesno:"Yes,No" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6">No bills found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Orders</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Medical Store</th>
+                    <th>Total Amount</th>
+                    <th>Created At</th>
+                    <th>Status</th>
+                    <th>Payment Method</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.customer.name }}</td>
+                        <td>{{ order.medical_store.store_name }}</td>
+                        <td>₹{{ order.total_price }}</td>
+                        <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+                        <td>{{ order.status }}</td>
+                        <td>{{ order.payment_method }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="7">No orders found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Chart Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+function calculatePercentage() {
+    const totalIncome = parseFloat(document.getElementById('totalIncome').innerText.replace(',', ''));
+    const percentage = parseFloat(document.getElementById('percentageInput').value);
+    if (isNaN(totalIncome) || isNaN(percentage)) {
+        alert('Please enter a valid percentage.');
+        return;
+    }
+    const result = (totalIncome * percentage) / 100;
+    document.getElementById('calculatedResult').innerText = `Result: ₹${result.toFixed(2)}`;
+}
+
+{% if total_income %}
+const barLabels = {{ pie_labels|safe }};
+const barValues = {{ pie_values|safe }};
+
+// Generate distinct colors for each bar
+const backgroundColors = [
+    '#42A5F5', '#66BB6A', '#FFA726', '#AB47BC', '#FF7043',
+    '#26C6DA', '#7E57C2', '#EC407A', '#FFCA28', '#26A69A',
+    '#EF5350', '#8D6E63'
+];
+const borderColors = backgroundColors.map(color => color); // use same colors or modify if needed
+
+const ctx = document.getElementById('salesBarChart').getContext('2d');
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: barLabels,
+        datasets: [{
+            label: 'Monthly Sales (₹)',
+            data: barValues,
+            backgroundColor: backgroundColors.slice(0, barValues.length),
+            borderColor: borderColors.slice(0, barValues.length),
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function(value) {
+                        return '₹' + value.toLocaleString();
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Income (₹)',
+                    font: { weight: 'bold' }
+                }
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: 'Month',
+                    font: { weight: 'bold' }
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return `₹${context.raw.toLocaleString()}`;
+                    }
+                }
+            }
+        }
+    }
+});
+{% endif %}
+
+</script>
+
+{% endblock %}

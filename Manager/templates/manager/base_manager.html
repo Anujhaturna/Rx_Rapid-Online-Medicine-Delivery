@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manager Dashboard</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Add this inside <head> if not already present -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<!-- Add this inside <head> if not already present -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<!-- Navigation Bar -->
+<nav class="flex items-center justify-between bg-green-700 text-white px-6 py-4 shadow">
+    <div class="text-xl font-bold">RxRapid Manager</div>
+
+    <div class="space-x-6 flex items-center">
+        <a href="{% url 'manager_dashboard' %}" class="hover:text-green-200">Dashboard</a>
+        <a href="{% url 'manage_stores' %}" class="hover:text-green-200">Manage Stores</a>
+        <a href="{% url 'sales_report' %}" class="hover:text-green-200">Sales Reports</a>
+
+
+        <!-- Notification Links -->
+        <a href="{% url 'send_notifications' %}" class="hover:text-green-200">
+            Send Notification
+        </a>
+        <a href="{% url 'sent_notifications' %}" class="hover:text-green-200">
+            Notifications History
+        </a>
+
+         <a href="{% url 'manager_notif' %}" class="hover:text-green-200">
+            Customer Issues
+        </a>
+
+        <a href="{% url 'manager_profile' %}" class="hover:text-green-200">Profile</a>
+
+         <a href="{% url 'receive_messege' %}" class="hover:text-green-200">
+            Messege from Admin
+        </a>
+
+
+        <!-- Logout -->
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="hover:text-green-200">
+                Logout
+            </button>
+        </form>
+    </div>
+</nav>
+
+    <!-- Main Content -->
+    <main class="p-6">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+</html>

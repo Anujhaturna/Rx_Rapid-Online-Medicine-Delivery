@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Online Payment{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto mt-10 bg-white shadow-md p-6 rounded-lg text-center">
+    <h2 class="text-2xl font-bold text-blue-600 mb-4">Make Payment</h2>
+
+    <p class="text-gray-600 mb-4">You are about to make a payment for your order from <strong>{{ store.store_name }}</strong>.</p>
+
+    <!-- Display the bank details for the respective medical store -->
+    <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-700">Bank Account Details</h3>
+        <ul class="text-gray-600 space-y-2">
+            <li><strong>Account Number:</strong> {{ store.bank_account_no }}</li>
+            <li><strong>IFSC Code:</strong> {{ store.ifsc_code }}</li>
+        </ul>
+    </div>
+
+    <!-- Option to proceed with payment -->
+    <form method="POST" action="{% url 'process-online-method' %}">
+        {% csrf_token %}
+        <input type="hidden" name="store_id" value="{{ store.id }}">
+
+        <div class="mb-6">
+            <label class="block text-lg font-semibold text-gray-700 mb-2">Choose a Payment Method:</label>
+            <div class="flex flex-col gap-3 items-start">
+                <label class="inline-flex items-center">
+                    <input type="radio" name="online_method" value="upi" class="mr-2" required>
+                    UPI
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="radio" name="online_method" value="card" class="mr-2">
+                    Debit/Credit Card
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="radio" name="online_method" value="netbanking" class="mr-2">
+                    Net Banking
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="radio" name="online_method" value="manual" class="mr-2">
+                    Manual Bank Transfer
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
+            Proceed to Pay
+        </button>
+    </form>
+
+    <p class="mt-6 text-sm text-gray-500">Alternatively, you can manually transfer the payment using the bank details above.</p>
+
+    <a href="{% url 'customer-dashboard' %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mt-4 inline-block">
+        Go Back to Dashboard
+    </a>
+</div>
+{% endblock %}

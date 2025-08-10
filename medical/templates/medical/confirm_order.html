@@ -1,0 +1,70 @@
+{% extends 'medical_base.html' %}
+{% load static %}
+
+{% block title %}Confirm Order{% endblock %}
+
+{% block content %}
+<div class="container mx-auto bg-white p-6 rounded shadow mt-6">
+    <h2 class="text-2xl font-bold text-green-700 mb-4">Order Confirmation</h2>
+
+    <div class="grid grid-cols-2 gap-4 text-sm">
+        <div>
+            <h4 class="font-semibold text-gray-600 mb-2">Customer Info</h4>
+            <p><strong>Name:</strong> {{ order.customer.name }}</p>
+            <p><strong>Phone:</strong> {{ order.customer.phone }}</p>
+            <p><strong>Email:</strong> {{ order.customer.email }}</p>
+            <p><strong>Address:</strong> {{ order.customer.address }}</p>
+        </div>
+        <div>
+            <h4 class="font-semibold text-gray-600 mb-2">Order Status</h4>
+            <p>Status: <span class="font-medium">{{ order.status|capfirst }}</span></p>
+            <p>Created on: {{ order.created_at|date:"d M Y, H:i" }}</p>
+        </div>
+    </div>
+
+    <div class="mt-6">
+        <h4 class="font-semibold text-gray-700 mb-2">Ordered Items</h4>
+        <table class="table table-bordered w-full text-sm">
+            <thead class="bg-gray-100 text-gray-700">
+                <tr>
+                    <th class="py-2 px-3 text-left">Medicine</th>
+                    <th class="py-2 px-3 text-left">Expiry</th>
+                    <th class="py-2 px-3 text-right">Qty</th>
+                    <th class="py-2 px-3 text-right">Price</th>
+                    <th class="py-2 px-3 text-right">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.items.all %}
+                <tr>
+                    <td class="py-2 px-3">{{ item.medicine.name }}</td>
+                    <td class="py-2 px-3">{{ item.medicine.expiry_date|date:"M Y" }}</td>
+                    <td class="py-2 px-3 text-right">{{ item.quantity }}</td>
+                    <td class="py-2 px-3 text-right">₹{{ item.medicine.price }}</td>
+                    <td class="py-2 px-3 text-right">₹{{ item.total_price }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-4 text-right text-sm">
+        <p><strong>Subtotal:</strong> ₹{{ order.total_price }}</p>
+        <p><strong>GST (18%):</strong> ₹{{ order.gst }}</p>
+        <p class="text-lg font-semibold text-green-700">Grand Total: ₹{{ order.grand_total }}</p>
+    </div>
+
+    {% if order.status != 'approved' %}
+    <form method="POST" action="{% url 'medical:approve_order' order.id %}" class="mt-6 text-right">
+        {% csrf_token %}
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded">
+            Confirm Order
+        </button>
+    </form>
+    {% else %}
+    <div class="mt-6 text-center text-green-700 font-medium">
+        ✅ Order has been approved.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

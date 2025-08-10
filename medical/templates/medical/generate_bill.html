@@ -1,0 +1,197 @@
+{% extends 'medical_base.html' %}
+{% load static crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="bg-white p-4 shadow rounded">
+        <h3 class="text-success">Prescription for {{ customer.name }}</h3>
+
+        <div class="mb-4 text-center">
+           {% if prescription.prescription_file %}
+    <img src="{{ prescription.prescription_file.url }}" class="img-fluid rounded border" style="max-height: 400px;">
+{% else %}
+    <p class="text-muted"></p>
+{% endif %}
+
+        </div>
+
+        <form method="POST" id="billForm">
+            {% csrf_token %}
+            <h5 class="text-primary mb-3">Enter Medicines for Bill:</h5>
+            {{ formset.management_form }}
+            <table class="table table-bordered" id="medicineTable">
+                <thead class="table-light">
+                <tr>
+                    <th>Medicine Name</th>
+                    <th>Batch No</th>
+                    <th>Expiry Date</th>
+                    <th>MRP</th>
+                    <th>Quantity</th>
+                    <th>Delete?</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for form in formset %}
+                <tr class="form-row">
+                    <td>{{ form.medicine_name }}</td>
+                    <td>{{ form.batch_number }}</td>
+                    <td>{{ form.expiry_date }}</td>
+                    <td>{{ form.mrp }}</td>
+                    <td>{{ form.quantity }}</td>
+                    <td>{{ form.DELETE }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="mb-3">
+                <button type="button" class="btn btn-outline-primary" id="addRowBtn">+ Add More</button>
+            </div>
+
+            <button type="submit" class="btn btn-success px-4">Generate Bill & Notify</button>
+            <a href="{% url 'medical:medical_dashboard' %}" class="btn btn-secondary ms-3">Cancel</a>
+        </form>
+    </div>
+
+    {% if bill_generated %}
+    <div class="alert alert-light mt-4">
+        <div class="bg-white p-5 rounded shadow border position-relative">
+            <!-- Watermark -->
+            <div class="position-absolute top-50 start-50 translate-middle opacity-25">
+                <img src="{% static 'images/rxrapid_watermark.jpg' %}"
+                     alt="Watermark"
+                     style="width: 500px; height: 500px;">
+            </div>
+
+            <h2 class="text-center text-primary mb-4 fw-bold">RxRapid - Invoice</h2>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Customer Info</h6>
+                    <p><strong>Name:</strong> {{ customer.name }}</p>
+                    <p><strong>Phone:</strong> {{ customer.phone }}</p>
+                    <p><strong>Email:</strong> {{ customer.email }}</p>
+                    <p><strong>Address:</strong> {{ customer.address }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Medical Store</h6>
+                    <p><strong>Store:</strong> {{ bill.medical_store.store_name }}</p>
+                    <p><strong>Shop No:</strong> {{ bill.medical_store.shop_no }}</p>
+                    <p><strong>Contact:</strong> {{ bill.medical_store.contact }}</p>
+                    <p><strong>Email:</strong> {{ bill.medical_store.email }}</p>
+                    <p><strong>Address:</strong> {{ bill.medical_store.address }}</p>
+                    <p><strong>City/State:</strong> {{ bill.medical_store.city }}, {{ bill.medical_store.state }}</p>
+                    <p><strong>Pincode:</strong> {{ bill.medical_store.pincode }}</p>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <table class="table table-bordered mt-3" id="invoiceTable">
+                <thead class="table-primary">
+                <tr class="text-center">
+                    <th>Medicine</th>
+                    <th>Expiry</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in bill.items.all %}
+                <tr class="text-center">
+                    <td>{{ item.medicine_name }}</td>
+                    <td>{{ item.expiry_date|date:"M Y" }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹{{ item.mrp }}</td>
+                    <td class="total-cell"></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="3" class="text-end fw-bold">Subtotal:</td>
+                    <td colspan="2" class="text-start" id="subtotal">₹0.00</td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="text-end fw-bold">GST (18%):</td>
+                    <td colspan="2" class="text-start" id="gst">₹0.00</td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="text-end fw-bold">Grand Total:</td>
+                    <td colspan="2" class="text-start text-primary fw-bold" id="grandTotal">₹0.00</td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="mt-4 text-center">
+            <a href="{{ pdf_url }}" target="_blank" class="btn btn-outline-primary me-2">Download PDF</a>
+            <form method="POST" action="{% url 'medical:notify_patient' bill.id %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">Notify Patient</button>
+            </form>
+        </div>
+
+        <script>
+            // Calculate and display the total for each item
+            document.addEventListener('DOMContentLoaded', function() {
+                let subtotal = 0;
+
+                // Get all rows in the table body
+                const rows = document.querySelectorAll('#invoiceTable tbody tr');
+
+                // Iterate over each row to calculate item totals
+                rows.forEach(row => {
+                    const quantity = parseFloat(row.cells[2].textContent);
+                    const price = parseFloat(row.cells[3].textContent.replace('₹', ''));
+                    const total = quantity * price;
+
+                    // Create a span element for the total
+                    const totalSpan = document.createElement('span');
+                    totalSpan.textContent = '₹' + total.toFixed(2);
+
+                    // Add the total to the subtotal
+                    subtotal += total;
+
+                    // Update the total cell in the row
+                    row.cells[4].appendChild(totalSpan);
+                });
+
+                // Calculate GST and Grand Total
+                const gst = subtotal * 0.18;
+                const grandTotal = subtotal + gst;
+
+                // Update the display
+                document.getElementById('subtotal').textContent = '₹' + subtotal.toFixed(2);
+                document.getElementById('gst').textContent = '₹' + gst.toFixed(2);
+                document.getElementById('grandTotal').textContent = '₹' + grandTotal.toFixed(2);
+            });
+        </script>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    const addRowBtn = document.getElementById('addRowBtn');
+    const tableBody = document.querySelector('#medicineTable tbody');
+    const totalForms = document.getElementById('id_form-TOTAL_FORMS');
+
+    addRowBtn.addEventListener('click', function () {
+        const currentFormCount = parseInt(totalForms.value);
+        const newFormIndex = currentFormCount;
+        const emptyRow = document.querySelectorAll('.form-row')[0];
+        const newRow = emptyRow.cloneNode(true);
+
+        // Replace input names & IDs
+        newRow.querySelectorAll('input, select').forEach(input => {
+            input.name = input.name.replace(`form-0`, `form-${newFormIndex}`);
+            input.id = input.id.replace(`form-0`, `form-${newFormIndex}`);
+            if (input.type !== 'hidden') input.value = '';
+        });
+
+        tableBody.appendChild(newRow);
+        totalForms.value = newFormIndex + 1;
+    });
+</script>
+{% endblock %}

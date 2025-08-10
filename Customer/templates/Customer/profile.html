@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+
+    <!-- Profile Header -->
+    <div class="bg-gradient-to-r from-green-100 to-green-50 rounded-2xl shadow-md p-6 sm:p-10 mb-10 border border-green-200">
+        <div class="flex justify-between items-center mb-6 border-b pb-4">
+            <h2 class="text-2xl sm:text-3xl font-semibold text-green-700 flex items-center gap-3">
+                <i class="fas fa-user-circle fa-lg"></i> Your Profile
+            </h2>
+            <button onclick="toggleEdit()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow transition">
+                <i class="fas fa-edit mr-2"></i> Edit Profile
+            </button>
+        </div>
+
+        <!-- Edit Form -->
+        <form method="POST" id="profile-form" class="grid grid-cols-1 sm:grid-cols-2 gap-6 hidden">
+            {% csrf_token %}
+            <div>
+                <label for="id_name" class="block font-medium text-gray-700 mb-1">Full Name</label>
+                {{ form.name }}
+            </div>
+            <div>
+                <label for="id_phone" class="block font-medium text-gray-700 mb-1">Phone Number</label>
+                {{ form.phone }}
+            </div>
+            <div class="sm:col-span-2">
+                <label for="id_address" class="block font-medium text-gray-700 mb-1">Address</label>
+                {{ form.address }}
+            </div>
+            <div class="sm:col-span-2">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md mt-2">
+                    <i class="fas fa-save mr-2"></i> Save Changes
+                </button>
+            </div>
+        </form>
+
+        <!-- Static Profile Info -->
+        <div id="profile-display" class="space-y-2 text-gray-700 text-lg">
+            <p><strong>Name:</strong> {{ request.user.name }}</p>
+            <p><strong>Phone:</strong> {{ request.user.phone }}</p>
+            <p><strong>Address:</strong> {{ request.user.address }}</p>
+        </div>
+    </div>
+
+    <!-- Medical History -->
+    <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 sm:p-10 mb-10">
+        <h3 class="text-xl sm:text-2xl font-semibold text-green-700 mb-4 flex items-center gap-2">
+            <i class="fas fa-notes-medical"></i> Medical History
+        </h3>
+
+  {% if prescriptions %}
+    <ul class="list-disc pl-6 space-y-3 text-gray-700">
+        {% for prescription in prescriptions %}
+            <li>
+                <div class="flex items-center justify-between flex-wrap">
+                    <div>
+                        <strong>{{ prescription.upload_time|date:"M d, Y H:i" }}</strong> —
+                        <a href="{{ prescription.prescription_file.url }}" target="_blank" class="text-blue-600 underline hover:text-blue-800">
+                            View Prescription
+                        </a>
+                    </div>
+                    <div class="text-sm text-gray-600 mt-1 sm:mt-0">
+                        Status: <span class="font-medium">{{ prescription.status|capfirst }}</span>
+                    </div>
+                    <div>
+                        {% comment %} Always try to fetch bill using prescription id {% endcomment %}
+                        <a href="{% url 'view_invoice' prescription.id %}" class="block px-4 py-2 text-blue-600 hover:underline">
+                            View Prescription Bill
+                        </a>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p class="text-gray-500">No prescriptions uploaded yet.</p>
+{% endif %}
+
+
+    </div>
+
+    <!-- My Orders -->
+    <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 sm:p-10 mb-10">
+        <h3 class="text-xl sm:text-2xl font-semibold text-green-700 mb-4 flex items-center gap-2">
+            <i class="fas fa-box-open"></i> My Orders
+        </h3>
+
+        {% if orders %}
+            <ul class="space-y-3 text-gray-700">
+                {% for order in orders %}
+                    <li class="flex justify-between items-center flex-wrap">
+                        <div>Order #{{ order.id }} - {{ order.created_at|date:"M d, Y" }}</div>
+                        <span class="text-sm text-gray-600">Status: <strong>{{ order.status|capfirst }}</strong></span>
+                        <div class="text-lg font-semibold text-green-600">
+                            Total: <strong>₹{{ order.grand_total }}</strong>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-500">No orders yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+<script>
+    function toggleEdit() {
+        document.getElementById('profile-form').classList.toggle('hidden');
+        document.getElementById('profile-display').classList.toggle('hidden');
+    }
+</script>
+{% endblock %}

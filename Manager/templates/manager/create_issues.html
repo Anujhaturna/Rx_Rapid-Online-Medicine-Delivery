@@ -1,0 +1,16 @@
+<!-- create_issues.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}Create an Issue{% endblock %}
+
+{% block content %}
+<h2>Create an Issue</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit Issue</button>
+</form>
+
+{% endblock %}

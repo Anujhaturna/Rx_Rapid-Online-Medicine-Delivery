@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Send Notification</title>
+  <style>
+    .back-btn-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+    }
+
+    .back-btn-container a {
+        padding: 10px 25px;
+        background-color: #1976D2;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+    }
+
+    .back-btn-container a:hover {
+        background-color: #0d47a1;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    .form-container {
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 30px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-container h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 25px;
+      font-size: 32px;
+      font-weight: 600;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 10px;
+    }
+
+    .form-container form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-container input,
+    .form-container textarea {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .form-container input:focus,
+    .form-container textarea:focus {
+      border-color: #007bff;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+
+    .form-container button {
+      background-color: #007bff;
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .form-container button:hover {
+      background-color: #0056b3;
+      transform: scale(1.02);
+    }
+
+    .message-list {
+      margin-top: 50px;
+    }
+
+    .message-list h3 {
+      font-size: 26px;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      border-left: 5px solid #007bff;
+      padding-left: 10px;
+    }
+
+    .message-item {
+      background: #fefefe;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      position: relative;
+    }
+
+    .message-item h4 {
+      margin: 0 0 10px;
+      color: #007bff;
+      font-size: 22px;
+    }
+
+    .message-item p {
+      margin: 0 0 10px;
+      color: #555;
+      font-size: 16px;
+    }
+
+    .message-item small {
+      display: block;
+      color: #888;
+      font-style: italic;
+      font-size: 14px;
+    }
+
+    .message-item .delete-form {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+
+    .message-item .delete-form button {
+      background: #dc3545;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .message-item .delete-form button:hover {
+      background: #c82333;
+    }
+
+    @media (max-width: 600px) {
+      .form-container {
+        padding: 20px;
+      }
+
+      .message-item h4 {
+        font-size: 18px;
+      }
+
+      .message-item p,
+      .message-item small {
+        font-size: 14px;
+      }
+
+      .message-item .delete-form {
+        top: 10px;
+        right: 10px;
+      }
+    }
+  </style>
+</head>
+  <div class="back-btn-container">
+        <a href="{% url 'admin_dashboard' %}">Back to Dashboard</a>
+  </div>
+<body>
+
+<div class="form-container">
+  <h2>Send Notification</h2>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Send</button>
+  </form>
+
+  {% if all_messages %}
+    <div class="message-list">
+      <h3>Sent Messages</h3>
+      {% for message in all_messages %}
+        <div class="message-item">
+          <h4>{{ message.subject }}</h4>
+          <p>{{ message.description }}</p>
+          <small>Sent on: {{ message.date|date:"d M Y, H:i" }}</small>
+
+          <form method="post" class="delete-form">
+            {% csrf_token %}
+            <input type="hidden" name="delete_id" value="{{ message.id }}">
+            <button type="submit">Delete</button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p style="text-align:center; color: #999; font-style: italic;">No messages have been sent yet.</p>
+  {% endif %}
+</div>
+
+</body>
+</html>

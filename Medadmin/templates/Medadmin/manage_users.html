@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Users</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #333;
+        }
+
+        form {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        input[type="text"] {
+            padding: 8px 12px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button, a.refresh-btn {
+            padding: 8px 16px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+        button:hover, a.refresh-btn:hover {
+            background: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 50px;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #4CAF50;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        a.add-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #2196F3;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        a.add-btn:hover {
+            background: #0b7dda;
+        }
+
+        .section {
+            margin-bottom: 60px;
+        }
+
+        mark {
+            padding: 2px 4px;
+            border-radius: 3px;
+            background: #ff0;
+        }
+
+        mark.color1 { background: #ffeb3b; }
+        mark.color2 { background: #8bc34a; }
+        mark.color3 { background: #03a9f4; }
+        mark.color4 { background: #f44336; }
+    </style>
+</head>
+<body>
+
+<h1>Manage Users</h1>
+
+<!-- ✅ Search Form (AJAX) -->
+<form id="searchForm">
+    <input type="text" id="searchInput" name="q" placeholder="Search by name, email, phone...">
+    <button type="submit">Search</button>
+    <a href="#" class="refresh-btn" onclick="resetSearch()">Refresh</a>
+</form>
+
+<!-- ✅ AJAX Results Container -->
+<div id="resultsContainer">
+    {% include 'Medadmin/manage_users_tables.html' %}
+</div>
+
+<a href="{% url 'add_manager' %}" class="add-btn">Add Manager</a>
+
+<script>
+// AJAX live search
+document.getElementById("searchForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const query = document.getElementById("searchInput").value;
+
+    fetch(`{% url 'manage_users' %}?q=` + encodeURIComponent(query), {
+        headers: { "X-Requested-With": "XMLHttpRequest" }
+    })
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById("resultsContainer").innerHTML = data;
+        highlightTerms(query);
+    });
+});
+
+// Refresh button clears input + reloads all
+function resetSearch() {
+    document.getElementById("searchInput").value = '';
+    fetch(`{% url 'manage_users' %}`, {
+        headers: { "X-Requested-With": "XMLHttpRequest" }
+    })
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById("resultsContainer").innerHTML = data;
+    });
+}
+
+// Fancy highlight exact whole words, multi-color
+function highlightTerms(term) {
+    if (!term) return;
+    const regex = new RegExp(`\\b(${term})\\b`, 'gi');
+    const cells = document.querySelectorAll('#resultsContainer .highlight');
+
+    const colors = ['color1', 'color2', 'color3', 'color4'];
+    let colorIndex = 0;
+
+    cells.forEach(cell => {
+        const text = cell.textContent;
+        cell.innerHTML = text.replace(regex, (match) => {
+            const c = colors[colorIndex % colors.length];
+            colorIndex++;
+            return `<mark class="${c}">${match}</mark>`;
+        });
+    });
+
+    const firstMark = document.querySelector('mark');
+    if (firstMark) {
+        firstMark.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+}
+</script>
+
+</body>
+</html>

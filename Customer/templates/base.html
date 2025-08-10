@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}RxRapid{% endblock %}</title>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+    <style>
+        /* Custom animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeInDown {
+            animation: fadeInDown 0.5s ease-out forwards;
+        }
+        /* Selective grab cursor for interactive elements */
+        a, button, [x-data] > button, [type="submit"] {
+            cursor: pointer !important;
+        }
+        a:hover, button:hover, [x-data] > button:hover, [type="submit"]:hover {
+            cursor: pointer !important;
+        }
+        /* Gradient background for header */
+        .gradient-bg {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        }
+        /* Smooth transitions for dropdown */
+        .dropdown-transition {
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 font-sans antialiased">
+
+    <!-- Navbar -->
+    <header class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="{% url 'customer-dashboard' %}" class="text-3xl font-bold flex items-center space-x-3">
+                <i class="fas fa-capsules text-4xl"></i>
+                <span>RxRapid</span>
+            </a>
+            <!-- Nav Items -->
+            <nav class="flex items-center space-x-8 text-lg font-medium">
+                <a href="{% url 'customer-dashboard' %}" class="flex items-center space-x-2 hover:text-green-200 transition duration-300 animate-fadeInDown">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Home</span>
+                </a>
+                <a href="{% url 'upload-prescription' %}" class="flex items-center space-x-2 hover:text-green-200 transition duration-300 animate-fadeInDown" style="animation-delay: 0.1s;">
+                    <i class="fas fa-file-upload"></i>
+                    <span>Upload</span>
+                </a>
+                <a href="{% url 'non-prescription' %}" class="flex items-center space-x-2 hover:text-green-200 transition duration-300 animate-fadeInDown" style="animation-delay: 0.2s;">
+                    <i class="fas fa-pills"></i>
+                    <span>Medicines</span>
+                </a>
+                <!-- Profile Dropdown -->
+                <div x-data="{ open: false }" class="relative" @mouseenter="open = true" @mouseleave="open = false">
+                    <button class="flex items-center space-x-2 hover:text-green-200 transition duration-300 animate-fadeInDown" style="animation-delay: 0.3s;">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </button>
+                    <div x-show="open" x-transition.duration.300ms class="dropdown-transition absolute right-0 mt-3 w-48 bg-white text-gray-800 rounded-xl shadow-xl z-50 overflow-hidden">
+                        <a href="{% url 'profile' %}" class="block px-4 py-3 hover:bg-green-100 transition duration-200">View Profile</a>
+                        <a href="{% url 'cart' %}" class="block px-4 py-3 hover:bg-green-100 transition duration-200">View Cart</a>
+                        <form action="{% url 'logout' %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="block w-full text-left px-4 py-3 hover:bg-green-100 transition duration-200">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex justify-center py-12">
+        <div class="w-full max-w-5xl px-6">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <p class="flex items-center space-x-2">
+                    <i class="fas fa-capsules"></i>
+                    <span>© 2025 RxRapid. All Rights Reserved.</span>
+                </p>
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <a href="#" class="text-gray-300 hover:text-white transition duration-300"><i class="fab fa-facebook fa-lg"></i></a>
+                    <a href="#" class="text-gray-300 hover:text-white transition duration-300"><i class="fab fa-twitter fa-lg"></i></a>
+                    <a href="#" class="text-gray-300 hover:text-white transition duration-300"><i class="fab fa-linkedin fa-lg"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

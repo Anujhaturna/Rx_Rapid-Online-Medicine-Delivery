@@ -1,0 +1,64 @@
+{% extends 'manager/base_manager.html' %}
+{% load static %}
+{% block title %}Manager Profile{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-8">
+    <h2 class="text-3xl font-semibold text-gray-900 mb-6">Update Manager Profile</h2>
+
+    <div class="bg-white shadow-xl rounded-xl p-8 space-y-8">
+        <form method="POST" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+
+            <!-- Profile Picture at Top with Animation -->
+            <div class="flex justify-center mt-4 animate__animated animate__fadeIn">
+                <div class="relative">
+                    <img src="{% if form.profile_picture.value %}{{ form.profile_picture.value.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}"
+                         alt="Profile Picture"
+                         class="w-32 h-32 object-cover rounded-full border-4 border-gray-300 shadow-lg transition-transform duration-500 hover:scale-110">
+                </div>
+            </div>
+
+            <!-- First and Last Name -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="id_first_name" class="block text-lg font-medium text-gray-700">First Name</label>
+                    <input type="text" name="first_name" value="{{ form.first_name.value }}" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                </div>
+                <div>
+                    <label for="id_last_name" class="block text-lg font-medium text-gray-700">Last Name</label>
+                    <input type="text" name="last_name" value="{{ form.last_name.value }}" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                </div>
+            </div>
+
+            <!-- Phone Number -->
+            <div>
+                <label for="id_phone_number" class="block text-lg font-medium text-gray-700">Phone Number</label>
+                <input type="text" name="phone_number" value="{{ form.phone_number.value }}" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <!-- Profile Picture Upload -->
+            <div>
+                <label for="id_profile_picture" class="block text-lg font-medium text-gray-700">Profile Picture</label>
+                <input type="file" name="profile_picture" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <!-- Buttons: Back and Save -->
+            <div class="flex justify-between items-center mt-8">
+                <!-- Back to Dashboard Button -->
+                <a href="{% url 'manager_dashboard' %}" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-300 transition duration-300">
+                    Back to Dashboard
+                </a>
+
+                <!-- Save Changes Button -->
+                <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-300">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Add Animation CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+{% endblock %}

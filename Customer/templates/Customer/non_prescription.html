@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% block title %}Browse Non-Prescription Medicines{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+        <h1 class="text-4xl font-extrabold text-center text-blue-700 mb-10 animate-fade-in-down">Browse Non-Prescription Medicines</h1>
+
+        <!-- Store Filter -->
+        <div class="mb-6">
+            <input id="storeSearch" type="text" placeholder="Search by store name or address..."
+                class="w-full md:w-2/3 mx-auto block px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
+                onkeyup="filterStores()">
+        </div>
+
+        <!-- Store Dropdown -->
+        <form method="get" action="">
+            <div class="w-full md:w-2/3 mx-auto">
+                <select id="storeDropdown" onchange="location = this.value;" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+                    <option value="">Select a Medical Store</option>
+                    {% for store in stores %}
+                        <option value="{% url 'browse-non-prescription' store.id %}" {% if store.id == selected_store_id %}selected{% endif %}>
+                            {{ store.name }} - {{ store.address }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+
+        {% if selected_store %}
+            <h2 class="text-2xl font-bold text-center text-gray-700 mt-12 animate-fade-in-up">Medicines at {{ selected_store.store_name }}</h2>
+
+            <!-- Medicines Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8 animate-fade-in-up">
+                {% if medicines %}
+                    {% for med in medicines %}
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:scale-105 transition duration-300">
+                            <img src="{% if med.medicine_image %}{{ med.medicine_image.url }}{% else %}https://via.placeholder.com/400x300?text=No+Image{% endif %}" alt="{{ med.name }}" class="w-full h-56 object-cover">
+
+                            <div class="p-5 text-center">
+                                <h3 class="text-xl font-semibold text-gray-800">{{ med.name }}</h3>
+                                <p class="text-green-600 font-medium mt-2">₹{{ med.price }}</p>
+
+                                <form method="post" action="{% url 'add-to-cart' med.id %}" class="mt-4" onsubmit="showCartNotification()">
+                                    {% csrf_token %}
+                                    <div class="flex justify-center items-center gap-2">
+                                        <button type="button" onclick="decreaseQty('qty-{{ med.id }}')" class="bg-gray-200 px-3 py-1 rounded">−</button>
+                                        <input type="number" id="qty-{{ med.id }}" name="quantity" value="1" min="1" class="w-16 text-center border rounded" readonly>
+                                        <button type="button" onclick="increaseQty('qty-{{ med.id }}')" class="bg-gray-200 px-3 py-1 rounded">+</button>
+                                    </div>
+                                    <button type="submit" class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Add to Cart</button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="col-span-full text-lg text-gray-600 text-center">No non-prescription medicines available from this store.</p>
+                {% endif %}
+            </div>
+
+            <!-- Flash Messages -->
+            {% if messages %}
+                <div class="mt-8 space-y-2">
+                    {% for message in messages %}
+                        <div class="p-4 rounded text-sm {% if message.tags == 'success' %}bg-green-100 text-green-800 border border-green-300{% elif message.tags == 'error' %}bg-red-100 text-red-800 border border-red-300{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Request Medicine Form -->
+            <div class="bg-white mt-12 shadow-lg rounded-lg p-6 animate-fade-in-up">
+                <h3 class="text-2xl font-bold text-center text-blue-700 mb-4">Request a Non-Prescription Medicine</h3>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="text" name="name" placeholder="Medicine Name (optional)" class="w-full mb-4 p-3 border border-gray-300 rounded focus:ring-blue-500 focus:outline-none" />
+                    <textarea name="description" placeholder="Short Description" class="w-full mb-4 p-3 border border-gray-300 rounded focus:ring-blue-500 focus:outline-none"></textarea>
+                    <input type="file" name="image" class="w-full mb-4 p-3 border border-gray-300 rounded focus:ring-blue-500 focus:outline-none" required />
+                    <button type="submit" name="upload_request" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Submit Request</button>
+                </form>
+            </div>
+
+            <!-- Previous Requests -->
+            {% if medicine_requests %}
+                <div class="mt-12 animate-fade-in-up">
+                    <h3 class="text-xl font-bold text-center text-gray-800 mb-4">Your Previous Requests</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {% for request in medicine_requests %}
+                            <div class="bg-white p-4 rounded-lg shadow-md">
+                                <img src="{{ request.image.url }}" alt="{{ request.name }}" class="w-full h-40 object-cover rounded mb-2">
+                                <h4 class="text-lg font-semibold">{{ request.name }}</h4>
+                                <p class="text-sm text-gray-600">{{ request.description|default:"No description provided." }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+<!-- Floating Cart Notification -->
+<div id="cart-notification" class="fixed bottom-10 right-10 bg-green-600 text-white p-4 rounded-lg shadow-lg hidden transition-all duration-300 z-50">
+    <div class="flex items-center gap-4 justify-between">
+        <span class="text-sm sm:text-base">Item added to cart!</span>
+        <a href="{% url 'cart_view' %}" class="bg-white text-green-600 px-4 py-2 rounded hover:bg-gray-200 transition duration-200">View Cart</a>
+        <button onclick="closeCartNotification()" class="ml-2 text-white text-lg font-bold">&times;</button>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script>
+    function increaseQty(id) {
+        const input = document.getElementById(id);
+        input.value = parseInt(input.value) + 1;
+    }
+
+    function decreaseQty(id) {
+        const input = document.getElementById(id);
+        if (parseInt(input.value) > 1) {
+            input.value = parseInt(input.value) - 1;
+        }
+    }
+
+    function filterStores() {
+        const input = document.getElementById('storeSearch').value.toLowerCase();
+        const options = document.querySelectorAll('#storeDropdown option');
+        options.forEach(opt => {
+            const name = opt.textContent.toLowerCase();
+            if (!name.includes(input)) {
+                opt.style.display = 'none';
+            } else {
+                opt.style.display = 'block';
+            }
+        });
+    }
+
+    function showCartNotification() {
+        localStorage.setItem("showCartNotification", "true");
+    }
+
+    function closeCartNotification() {
+        const notification = document.getElementById("cart-notification");
+        notification.classList.add("hidden");
+        localStorage.removeItem("showCartNotification");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        if (localStorage.getItem("showCartNotification") === "true") {
+            const notification = document.getElementById("cart-notification");
+            notification.classList.remove("hidden");
+        }
+    });
+</script>
+
+<!-- Animations -->
+<style>
+@keyframes fade-in-down {
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in-up {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-down {
+    animation: fade-in-down 0.6s ease-out;
+}
+.animate-fade-in-up {
+    animation: fade-in-up 0.6s ease-out;
+}
+</style>
+{% endblock %}

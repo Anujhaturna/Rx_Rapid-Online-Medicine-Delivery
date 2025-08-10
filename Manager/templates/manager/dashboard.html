@@ -1,0 +1,55 @@
+{% extends 'manager/base_manager.html' %}
+{% load static %}
+{% block title %}Manager Dashboard | RxRapid{% endblock %}
+
+{% block content %}
+<div class="relative min-h-screen">
+
+
+
+  <!-- ✅ Dashboard Content --><div class="relative z-10"><h2 class="text-2xl font-semibold mb-6">Manager Dashboard</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- Total Medical Stores -->
+      <div class="bg-white p-6 rounded-2xl shadow border-l-4 border-green-500 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-3 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a1 1 0 001 1h3v-5h4v5h3a1 1 0 001-1V7H3z" />
+        </svg>
+        <h4 class="text-gray-500">Total Medical Stores</h4>
+        <p class="text-3xl font-bold">{{ total_stores }}</p>
+      </div>
+
+      <!-- Pending Approvals -->
+      <div class="bg-white p-6 rounded-2xl shadow border-l-4 border-yellow-500 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-3 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <h4 class="text-gray-500">Pending Approvals</h4>
+        <p class="text-3xl font-bold">{{ pending_approvals }}</p>
+      </div>
+
+      <!-- Total Orders -->
+      <div class="bg-white p-6 rounded-2xl shadow border-l-4 border-blue-500 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-3 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v4H3zM3 7h18v14H3z" />
+        </svg>
+        <h4 class="text-gray-500">Total Orders</h4>
+        <p class="text-3xl font-bold">{{ total_orders }}</p>
+      </div>
+
+
+
+      <!-- Unresolved Customer Issues -->
+      <div class="bg-white p-6 rounded-2xl shadow border-l-4 border-purple-500 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-3 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 00-12.728 0M9 12l2 2 4-4" />
+        </svg>
+        <h4 class="text-gray-500">Resolved Customer Issues</h4>
+        <p class="text-3xl font-bold">{{ unresolved_customer_issues }}</p>
+      </div>
+
+
+</div>
+
+  {% endblock %}

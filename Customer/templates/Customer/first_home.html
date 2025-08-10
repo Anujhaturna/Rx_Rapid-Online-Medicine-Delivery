@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Rx Rapid connects customers with trusted medical stores for seamless online medicine ordering.">
+    <meta name="keywords" content="online pharmacy, medical store, medicine delivery, Rx Rapid">
+    <meta name="author" content="Rx Rapid Team">
+    <title>Rx Rapid - Your Trusted Medical Hub</title>
+    <link rel="icon" href="https://example.com/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        :root {
+            --teal: #14B8A6;
+            --coral: #F87171;
+            --golden: #FBBF24;
+            --lavender: #A78BFA;
+            --off-white: #F9FAFB;
+            --slate: #1E293B;
+        }
+        .nav-link:hover {
+            transform: scale(1.1);
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+        .btn-hover {
+            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px) rotate(1deg);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        .icon-hover {
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+        .icon-hover:hover {
+            transform: scale(1.2) rotate(10deg);
+        }
+    </style>
+</head>
+<body class="bg-[var(--off-white)] font-sans text-[var(--slate)] antialiased">
+
+    <!-- Header -->
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
+
+            <h1 class="text-3xl font-extrabold text-[var(--teal)] tracking-tight">Rx Rapid</h1>
+            <nav aria-label="Main navigation">
+                <ul class="flex space-x-8">
+                    <li><a href="{% url 'about' %}" class="nav-link text-[var(--slate)] hover:text-[var(--coral)] font-medium" aria-label="About page">About</a></li>
+                    <li><a href="{% url 'first_home' %}" class="nav-link text-[var(--slate)] hover:text-[var(--coral)] font-medium" aria-label="Home page">Home</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative bg-gradient-to-r from-[var(--teal)] via-[var(--lavender)] to-[var(--coral)] text-white py-24 overflow-hidden">
+        <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('https://images.unsplash.com/photo-1585435557343-3b0929fb6be0?auto=format&fit=crop&w=1920&q=80');"></div>
+        <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl sm:text-5xl font-bold mb-6 tracking-tight animate-fade-in">Your Trusted Online Medical Hub</h2>
+            <p class="text-lg sm:text-xl mb-8 max-w-3xl mx-auto opacity-90">Connect with verified medical stores, order medicines seamlessly, and manage your health with ease.</p>
+            <div class="flex justify-center space-x-6">
+                <a href="{% url 'home_view' %}" class="btn-hover px-8 py-3 bg-[var(--golden)] text-[var(--slate)] font-semibold rounded-full transition duration-300 shadow-md" aria-label="Customer portal">Customer</a>
+                <a href="{% url 'medical:medical_login' %}" class="btn-hover px-8 py-3 bg-[var(--coral)] text-white font-semibold rounded-full transition duration-300 shadow-md" aria-label="Medical store login">Medical Store</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Section -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="card-hover bg-white p-8 rounded-2xl shadow-lg">
+                <i class="icon-hover fa-solid fa-user-md text-5xl text-[var(--teal)] mb-4" aria-label="Customer Icon"></i>
+                <h3 class="text-2xl font-semibold mb-3 text-[var(--slate)]">For Customers</h3>
+                <p class="text-gray-600">Sign up, browse medicines, and order from trusted stores with secure OTP-based login.</p>
+            </div>
+            <div class="card-hover bg-white p-8 rounded-2xl shadow-lg">
+                <i class="icon-hover fa-solid fa-store text-5xl text-[var(--coral)] mb-4" aria-label="Store Icon"></i>
+                <h3 class="text-2xl font-semibold mb-3 text-[var(--slate)]">For Stores</h3>
+                <p class="text-gray-600">Register your store, get manager approval, and manage orders effortlessly online.</p>
+            </div>
+            <div class="card-hover bg-white p-8 rounded-2xl shadow-lg">
+                <i class="icon-hover fa-solid fa-shield-halved text-5xl text-[var(--lavender)] mb-4" aria-label="Security Icon"></i>
+                <h3 class="text-2xl font-semibold mb-3 text-[var(--slate)]">Secure & Verified</h3>
+                <p class="text-gray-600">All stores and customers are verified, managed by our dedicated admin team.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[var(--slate)] text-white border-t mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row justify-between items-center">
+            <p class="text-gray-300 text-sm">© 2025 Rx Rapid. All rights reserved.</p>
+            <div class="flex space-x-6 mt-4 md:mt-0">
+                <a href="https://facebook.com" class="icon-hover text-gray-300 hover:text-[var(--golden)] transition duration-300" aria-label="Facebook" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://twitter.com" class="icon-hover text-gray-300 hover:text-[var(--golden)] transition duration-300" aria-label="Twitter" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
+                <a href="https://linkedin.com" class="icon-hover text-gray-300 hover:text-[var(--golden)] transition duration-300" aria-label="LinkedIn" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

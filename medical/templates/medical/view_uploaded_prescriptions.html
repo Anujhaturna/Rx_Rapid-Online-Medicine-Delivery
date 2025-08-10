@@ -1,0 +1,209 @@
+{% extends 'medical_base.html' %}
+{% load static crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="bg-white p-5 shadow rounded text-center">
+        <h2 class="text-success mb-4"> Uploaded Prescriptions  {{ customer.name }}</h2>
+
+        <p>Here are the prescriptions uploaded by Patient <strong>{{ customer.name }}</strong></p>
+
+        {% if prescriptions %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle">
+                    <thead class="table-success">
+                    <tr>
+                        <th>Prescription File</th>
+                        <th>Uploaded At</th>
+                        <th>Status</th>
+                        <th>Notes</th>
+                        <th>Action</th>
+                        <th>Remove</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for prescription in prescriptions %}
+                    <tr>
+                        <td>
+                            {% if prescription.prescription_file %}
+                                {% if ".jpg" in prescription.prescription_file.url or ".jpeg" in prescription.prescription_file.url or ".png" in prescription.prescription_file.url %}
+                                    <img src="{{ prescription.prescription_file.url }}" width="80" height="80" class="img-thumbnail">
+                                {% else %}
+                                    <a href="{{ prescription.prescription_file.url }}" target="_blank">
+                                        View File ({{ prescription.prescription_file.name|slice:"20" }})
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>{{ prescription.upload_time|date:"d M Y H:i" }}</td>
+                        <td>
+                            <span class="badge {% if prescription.status == 'Delivered' %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                                {{ prescription.status }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if prescription.notes %}
+                                {{ prescription.notes }}
+                            {% else %}
+                                <span class="text-muted">No notes</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if prescription.bill %}
+                                <button class="btn btn-secondary btn-sm" disabled>
+                                    Bill Already Generated
+                                </button>
+                            {% else %}
+                                <a href="{% url 'medical:view_prescription_and_generate_bill' prescription.id %}" class="btn btn-outline-success btn-sm">
+                                    View & Generate Bill
+                                </a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="removeRow(this)">Remove</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted">No prescriptions available for this patient.</p>
+        {% endif %}
+
+        <hr class="my-5">
+
+        <!-- Medicine Requests Section -->
+        <h2 class="text-info mb-4">Medicine Requests from Patients {{ request.customer.name }}</h2>
+
+        {% if medicine_requests %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle">
+                    <thead class="table-info">
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Customer Email</th>
+                        <th>Customer Phone</th>
+                        <th>Medicine Name</th>
+                        <th>Image</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                        <th>Remove</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for request in medicine_requests %}
+                    <tr>
+                        <td>{{ request.customer.name }}</td>
+                        <td>{{ request.customer.email }}</td>
+                        <td>{{ request.customer.phone }}</td>
+                        <td>{{ request.name }}</td>
+                        <td>
+                            {% if request.image %}
+                                <img src="{{ request.image.url }}" width="70" height="70" class="img-thumbnail"
+                                     style="cursor: zoom-in;" onclick="toggleImageEnlargement(this)">
+                            {% else %}
+                                <span class="text-muted">No Image</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if request.description %}
+                                {{ request.description }}
+                            {% else %}
+                                <span class="text-muted">No description provided</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'medical:add_medicine' %}" class="btn btn-outline-primary btn-sm">
+                                Add medicine
+                            </a>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="removeRow(this)">Remove</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted">No medicine requests available for this patient.</p>
+        {% endif %}
+
+        <hr class="my-4">
+
+        <a href="{% url 'medical:medical_dashboard' %}" class="btn btn-primary px-4">Back to Dashboard</a>
+    </div>
+</div>
+
+<!-- Overlay and Enlarged Image CSS -->
+<style>
+    .enlarged-image {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        max-width: 90vw;
+        max-height: 90vh;
+        width: auto;
+        height: auto;
+        transform: translate(-50%, -50%);
+        z-index: 1050;
+        border: 5px solid #fff;
+        background-color: #fff;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+        cursor: zoom-out;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .image-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0,0,0,0.7);
+        z-index: 1040;
+        display: none;
+    }
+</style>
+
+<!-- JavaScript for Image Zoom and Row Removal -->
+<script>
+    function toggleImageEnlargement(imgElement) {
+        let existingEnlarged = document.querySelector('.enlarged-image');
+        let overlay = document.querySelector('.image-overlay');
+
+        if (existingEnlarged) {
+            existingEnlarged.remove();
+            overlay.style.display = "none";
+            return;
+        }
+
+        let clone = imgElement.cloneNode();
+        clone.classList.add('enlarged-image');
+        clone.onclick = () => toggleImageEnlargement(clone);
+        document.body.appendChild(clone);
+        overlay.style.display = "block";
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        let overlay = document.createElement('div');
+        overlay.className = 'image-overlay';
+        overlay.onclick = () => {
+            let enlarged = document.querySelector('.enlarged-image');
+            if (enlarged) enlarged.remove();
+            overlay.style.display = "none";
+        };
+        document.body.appendChild(overlay);
+    });
+
+    function removeRow(button) {
+        const row = button.closest('tr');
+        if (row) {
+            row.remove();
+        }
+    }
+</script>
+{% endblock %}

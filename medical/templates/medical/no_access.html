@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex justify-center items-center h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md text-center">
+        <h1 class="text-2xl font-bold text-red-500 mb-4">Access Denied</h1>
+        <p class="text-gray-700">You are not authorized to view this page.</p>
+        <a href="{% url 'medical_dashboard' %}" class="mt-6 inline-block px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Return to Home</a>
+    </div>
+</div>
+{% endblock %}

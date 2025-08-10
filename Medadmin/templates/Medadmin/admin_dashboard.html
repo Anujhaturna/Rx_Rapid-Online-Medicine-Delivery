@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard</title>
+  {% load static %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f0f4f8, #d9e4f5);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .dashboard-container {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    .dashboard-container h1 {
+      font-size: 30px;
+      color: #1e3a8a;
+      margin-bottom: 30px;
+      font-weight: 600;
+    }
+
+    .stats-cards {
+      display: flex;
+      gap: 15px;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      flex: 1;
+      min-width: 100px;
+      background-color: #f9fafb;
+      padding: 15px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+
+    .card .icon {
+      font-size: 22px;
+      color: #2563eb;
+      margin-bottom: 6px;
+    }
+
+    .card .number {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    .card .label {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .dashboard-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background-color: #3b82f6;
+      color: white;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: 500;
+      border-radius: 10px;
+      text-decoration: none;
+      margin-bottom: 15px;
+      transition: background 0.3s ease;
+    }
+
+    .dashboard-button i {
+      font-size: 18px;
+    }
+
+    .dashboard-button:hover {
+      background-color: #2563eb;
+    }
+
+    .reports-btn {
+      background-color: #10b981;
+    }
+
+    .reports-btn:hover {
+      background-color: #059669;
+    }
+
+    .logout-btn {
+      background-color: #ef4444;
+    }
+
+    .logout-btn:hover {
+      background-color: #dc2626;
+    }
+
+    @media (max-width: 500px) {
+      .stats-cards {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="dashboard-container">
+    <h1>Admin Dashboard</h1>
+
+    <!-- Stat Cards -->
+    <div class="stats-cards">
+      <div class="card">
+        <div class="icon"><i class="fas fa-bell"></i></div>
+        <div class="number"></div>
+        <div class="label">Notifications</div>
+      </div>
+      <div class="card">
+        <div class="icon"><i class="fas fa-file-alt"></i></div>
+        <div class="number"></div>
+        <div class="label">Reports</div>
+      </div>
+      <div class="card">
+        <div class="icon"><i class="fas fa-user-shield"></i></div>
+        <div class="number"></div>
+        <div class="label">Admin</div>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <a href="{% url 'send_messege' %}" class="dashboard-button">
+      <i class="fas fa-paper-plane"></i> Send Notification
+    </a>
+    <a href="{% url 'view_reports' %}" class="dashboard-button reports-btn">
+      <i class="fas fa-chart-line"></i> View Reports
+    </a>
+    <a href="{% url 'manage_users' %}" class="dashboard-button reports-btn">
+      <i class="fas fa-chart-line"></i> Manage Users
+    </a>
+    <a href="{% url 'admin_logout' %}" class="dashboard-button logout-btn">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+  </div>
+</body>
+</html>

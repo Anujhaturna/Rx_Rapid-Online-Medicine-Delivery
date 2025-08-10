@@ -1,0 +1,121 @@
+
+
+{% block content %}
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f0f8ff;
+        margin: 0;
+        padding: 0;
+    }
+
+    .about-container {
+        padding: 60px 20px;
+        max-width: 1100px;
+        margin: auto;
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .about-title {
+        text-align: center;
+        font-size: 38px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 40px;
+        position: relative;
+    }
+
+    .about-title::after {
+        content: '';
+        width: 100px;
+        height: 4px;
+        background-color: #4CAF50;
+        display: block;
+        margin: 10px auto 0;
+        border-radius: 2px;
+    }
+
+    .about-sections {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+        justify-content: space-between;
+    }
+
+    .about-section {
+        background-color: #ffffff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        flex: 1;
+        min-width: 300px;
+        transition: transform 0.3s ease;
+    }
+
+    .about-section:hover {
+        transform: translateY(-6px);
+    }
+
+    .about-section img {
+        width: 100%;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        object-fit: cover;
+        height: 210px;
+    }
+
+    .about-section h3 {
+        color: #00796B;
+        font-size: 24px;
+        margin-bottom: 12px;
+    }
+
+    .about-section p {
+        color: #444;
+        font-size: 15.5px;
+        line-height: 1.7;
+    }
+
+    @media (max-width: 768px) {
+        .about-sections {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="about-container">
+    <h1 class="about-title">About Rx Rapid</h1>
+    <div class="about-sections">
+
+        <div class="about-section">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkGKsjhIJkLYG2s3zzw-eyvZJbE9zDjztxFw&s" alt="Our Mission">
+            <h3>Our Mission</h3>
+            <p>
+                At Rx Rapid, our mission is to revolutionize medicine access for everyone. We help customers connect with trusted medical stores and ensure safe, fast delivery of their prescriptions and health products.
+            </p>
+        </div>
+
+        <div class="about-section">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiCFEBRlOeuxvJ1ta7kE2rNan3AvIbKCy0Zw&s" alt="Our Team">
+            <h3>Our Team</h3>
+            <p>
+                Behind Rx Rapid is a dedicated team of developers, pharmacists, and customer care professionals who work together to ensure your healthcare needs are met with speed, accuracy, and care.
+            </p>
+        </div>
+
+        <div class="about-section">
+            <img src="https://img.freepik.com/premium-photo/doctor-coat-with-stethoscope-hanger-blue-background_392895-81760.jpg" alt="Why Choose Us">
+            <h3>Why Choose Us?</h3>
+            <p>
+                We combine technology and care. Rx Rapid gives you the freedom to order from multiple verified stores, track your orders, get instant updates, and consult with real pharmacists — all from the comfort of your home.
+            </p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

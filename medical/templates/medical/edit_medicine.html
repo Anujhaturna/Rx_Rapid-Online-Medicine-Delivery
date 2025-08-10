@@ -1,0 +1,20 @@
+{% extends 'medical_base.html' %}
+{% load static crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="bg-white p-5 shadow rounded">
+        <h2 class="text-primary mb-4 text-center">Edit Medicine</h2>
+
+        <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+            {% csrf_token %}
+            {{ form|crispy }}
+
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{% url 'medical:medical_dashboard' %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-success">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

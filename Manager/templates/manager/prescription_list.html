@@ -1,0 +1,77 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block content %}
+<div class="p-6">
+  <h2 class="text-2xl font-bold mb-6">Prescription List</h2>
+
+  <div class="overflow-x-auto">
+    <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+      <thead class="bg-green-600 text-white">
+        <tr>
+          <th class="py-3 px-6 text-left">Store</th>
+          <th class="py-3 px-6 text-left">Image</th>
+          <th class="py-3 px-6 text-left">Status</th>
+          <th class="py-3 px-6 text-left">Uploaded At</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for prescription in prescriptions %}
+        <tr class="border-b hover:bg-gray-100 transition duration-150">
+          <td class="py-3 px-6">{{ prescription.store.store_name }}</td>
+          <td class="py-3 px-6">
+            {% if prescription.image %}
+              <img src="{{ prescription.image.url }}" alt="Prescription" class="w-24 h-auto rounded border border-gray-300 cursor-pointer" onclick="openModal('{{ prescription.image.url }}')">
+            {% else %}
+              <span class="text-gray-500 italic">No image</span>
+            {% endif %}
+          </td>
+          <td class="py-3 px-6">
+            {% if prescription.status == 'approved' %}
+              <span class="text-green-600 font-semibold capitalize">{{ prescription.status }}</span>
+            {% elif prescription.status == 'rejected' %}
+              <span class="text-red-600 font-semibold capitalize">{{ prescription.status }}</span>
+            {% else %}
+              <span class="text-yellow-600 font-semibold capitalize">{{ prescription.status }}</span>
+            {% endif %}
+          </td>
+          <td class="py-3 px-6 text-gray-700">{{ prescription.uploaded_at|date:"Y-m-d H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="text-center py-6 text-gray-500">No prescriptions uploaded yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal for image preview -->
+<div id="imageModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+  <div class="relative bg-white p-4 rounded-lg w-[60%] max-w-lg">
+    <!-- Smaller Close button -->
+    <span class="absolute top-2 right-2 text-white text-xl cursor-pointer" onclick="closeModal()">×</span>
+
+    <!-- Smaller Image Preview -->
+    <img id="modalImage" src="" alt="Prescription Image" class="w-[80%] max-h-[60vh] object-contain mx-auto">
+  </div>
+</div>
+
+<script>
+  // Function to open modal with the clicked image
+  function openModal(imageUrl) {
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    modalImage.src = imageUrl;
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+  }
+
+  // Function to close modal and return to original state
+  function closeModal() {
+    const modal = document.getElementById('imageModal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = 'auto'; // Allow scrolling again when modal is closed
+  }
+</script>
+{% endblock %}

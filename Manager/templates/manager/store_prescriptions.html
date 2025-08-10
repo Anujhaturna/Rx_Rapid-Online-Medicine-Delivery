@@ -1,0 +1,23 @@
+{% extends 'manager/base_manager.html' %}
+{% load static %}
+
+{% block title %}Prescriptions | {{ store.name }}{% endblock %}
+
+{% block content %}
+<h2 class="text-2xl font-bold mb-4">Prescriptions for {{ store.name }}</h2>
+
+{% if prescriptions %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for p in prescriptions %}
+        <div class="bg-white p-4 rounded-xl shadow border-l-4 border-blue-400">
+            <h4 class="text-lg font-semibold">{{ p.customer.username }}</h4>
+            <p class="text-sm text-gray-600 mb-2">{{ p.uploaded_at|date:"F d, Y - h:i A" }}</p>
+            <img src="{{ p.image.url }}" alt="Prescription" class="w-full h-48 object-contain rounded mb-2 border">
+            <p>Status: <span class="font-medium text-blue-700">{{ p.status }}</span></p>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="text-gray-600">No prescriptions uploaded yet.</p>
+{% endif %}
+{% endblock %}

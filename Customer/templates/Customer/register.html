@@ -1,0 +1,43 @@
+<!-- templates/customer/register.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - RxRapid</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-white min-h-screen flex items-center justify-center px-4">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 space-y-6">
+        <div class="text-center">
+            <h2 class="text-3xl font-extrabold text-gray-800">Create Your Account</h2>
+            <p class="text-sm text-gray-500 mt-2">Step 1: Basic Information</p>
+        </div>
+        <form method="POST" class="space-y-4">
+            {% csrf_token %}
+
+            <!-- Email Field -->
+            <div>
+                <label for="id_email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                <input type="email" name="email" id="id_email" value="{{ form.email.value }}" class="mt-1 block w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="you@example.com" required />
+            </div>
+
+            <!-- Phone Field -->
+            <div>
+                <label for="id_phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                <input type="text" name="phone" id="id_phone" value="{{ form.phone.value }}" class="mt-1 block w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="(123) 456-7890" required />
+            </div>
+
+            <div>
+                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md font-medium transition">
+                    Continue
+                </button>
+            </div>
+        </form>
+        <p class="text-xs text-gray-400 text-center">
+            By continuing, you agree to our <a href="#" class="underline hover:text-blue-600">Terms</a> & <a href="#" class="underline hover:text-blue-600">Privacy Policy</a>.
+        </p>
+    </div>
+</body>
+</html>

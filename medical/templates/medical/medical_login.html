@@ -1,0 +1,32 @@
+{% extends 'medical_base.html' %}
+{% load static crispy_forms_tags %}
+
+{% block content %}
+<div class="container bg-white shadow rounded p-4">
+    <h2 class="mb-4 text-success text-center">Medical Store Login</h2>
+    <form method="POST" novalidate>
+        {% csrf_token %}
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.username|as_crispy_field }}
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.password|as_crispy_field }}
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success px-5">Login</button>
+        </div>
+    </form>
+
+    <div class="text-center mt-3">
+        <p>Don't have an account? <a href="{% url 'medical:medical_registration' %}">Register here</a></p>
+    </div>
+</div>
+{% endblock %}
+

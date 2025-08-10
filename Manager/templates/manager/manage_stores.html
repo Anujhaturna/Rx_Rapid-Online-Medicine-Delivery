@@ -1,0 +1,63 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block title %}Manage Stores{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: flex-end; margin: 20px;">
+    <a href="{% url 'manager_dashboard' %}" style="padding: 10px 20px; background-color: #1976D2; color: white; text-decoration: none; border-radius: 5px;">
+        Back to Dashboard
+    </a>
+</div>
+
+<h2 class="text-3xl font-semibold mb-8">Manage Medical Stores</h2>
+
+
+
+<div class="overflow-x-auto bg-white rounded-xl shadow-lg p-4">
+    <table class="min-w-full table-auto bg-white rounded-xl shadow">
+        <thead class="bg-green-600 text-white">
+            <tr>
+                <th class="py-4 px-6 text-left font-medium text-sm">Store Name</th>
+                <th class="py-4 px-6 text-left font-medium text-sm">Owner</th>
+                <th class="py-4 px-6 text-left font-medium text-sm">Email</th>
+                <th class="py-4 px-6 text-left font-medium text-sm">Contact</th>
+                <th class="py-4 px-6 text-left font-medium text-sm">Approval</th>
+                <th class="py-4 px-6 text-left font-medium text-sm">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for store in stores %}
+            <tr class="border-b hover:bg-gray-50 transition duration-150">
+                <td class="py-4 px-6">{{ store.store_name }}</td>
+                <td class="py-4 px-6">{{ store.owner_name }}</td>
+                <td class="py-4 px-6">{{ store.email }}</td>
+                <td class="py-4 px-6">{{ store.contact }}</td>
+                <td class="py-4 px-6">
+                    {% if store.is_approved %}
+                        <span class="text-green-600 font-semibold">Approved</span>
+                    {% else %}
+                        <span class="text-red-600 font-semibold">Pending</span>
+                    {% endif %}
+                </td>
+                <td class="py-4 px-6">
+                    <div class="flex flex-wrap gap-2">
+                        <a href="{% url 'view_store' store.id %}" class="text-blue-600 hover:text-blue-800 font-medium transition duration-200">View</a>
+                        <a href="{% url 'remove_store' store.id %}" class="text-red-600 hover:text-red-800 font-medium transition duration-200">Remove</a>
+                        <a href="{% url 'view_prescriptions' store.id %}" class="text-green-600 hover:text-green-800 font-medium transition duration-200">Prescriptions</a>
+                       {% if not store.is_approved %}
+                            <a href="{% url 'approve_store' store.id %}" class="inline-block text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg font-semibold transition">Approve</a>
+                        {% else %}
+                            <a href="{% url 'reject_store' store.id %}" class="inline-block text-white bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-lg font-semibold transition">Reject</a>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center py-6 text-gray-500">No medical stores found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
